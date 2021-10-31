@@ -11,6 +11,7 @@ homeRouter.get('/', (req, res) => {
     },
     bases: Object.entries(COOKIE_BASES),
     addons: Object.entries(COOKIE_ADDONS),
+
     // TODO: we need something to know what are the prices of selected items
   });
 });
