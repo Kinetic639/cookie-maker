@@ -2,19 +2,22 @@
 /* eslint-disable operator-linebreak */
 const express = require('express');
 const { COOKIE_BASES, COOKIE_ADDONS } = require('../data/cookies-data');
-const { handlebarsHelpers } = require('../handlebars-helpers');
+const { getAddonsFromReq } = require('../utils/get-addons-from-req');
+const { handlebarsHelpers } = require('../utils/handlebars-helpers');
 
 const homeRouter = express.Router();
 
 homeRouter.get('/', (req, res) => {
   const { cookieBase } = req.cookies;
 
+  const addons = getAddonsFromReq(req);
+
   const sum =
     handlebarsHelpers.findPrice(
       Object.entries(COOKIE_BASES),
       cookieBase || 'light',
     ) +
-    ['coconut', 'honey'].reduce(
+    addons.reduce(
       (prev, curr) =>
         prev + handlebarsHelpers.findPrice(Object.entries(COOKIE_ADDONS), curr),
       0,
@@ -23,7 +26,7 @@ homeRouter.get('/', (req, res) => {
   res.render('home/index', {
     cookie: {
       base: cookieBase || 'light',
-      addons: ['coconut', 'honey'],
+      addons,
     },
     bases: Object.entries(COOKIE_BASES),
     addons: Object.entries(COOKIE_ADDONS),
