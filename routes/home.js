@@ -7,7 +7,7 @@ homeRouter.get('/', (req, res) => {
   res.render('home/index', {
     cookie: {
       base: 'light',
-      addons: ['coconut', 'cranberries', 'honey'],
+      addons: ['coconut', 'honey'],
     },
     bases: Object.entries(COOKIE_BASES),
     addons: Object.entries(COOKIE_ADDONS),
