@@ -1,3 +1,5 @@
+/* eslint-disable implicit-arrow-linebreak */
+/* eslint-disable operator-linebreak */
 const express = require('express');
 const { COOKIE_BASES, COOKIE_ADDONS } = require('../data/cookies-data');
 const { handlebarsHelpers } = require('../handlebars-helpers');
