@@ -11,3 +11,9 @@ html {
 i {
   margin: 0 10px;
 }
+
+.error {
+  border: 2px solid red;
+  padding: 0 10px;
+  background: #ffcdcd;
+}
