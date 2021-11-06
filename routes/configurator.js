@@ -41,10 +41,16 @@ configuratorRouter
   .get('/remove/addon/:addon', (req, res) => {
     const { addon } = req.params;
 
-    const addons = getAddonsFromReq(req).filter((add) => add !== addon);
+    const oldAddons = getAddonsFromReq(req);
+
+    if (!oldAddons.includes(addon)) {
+      return renderError(res, `Your cookie doesn't contains ${addon} addon.`);
+    }
+
+    const newAddons = getAddonsFromReq(req).filter((add) => add !== addon);
 
     res
-      .cookie('cookieAddons', JSON.stringify(addons))
+      .cookie('cookieAddons', JSON.stringify(newAddons))
       .render('configurator/removed', { addon });
   });
 
