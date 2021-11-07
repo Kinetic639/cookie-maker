@@ -1,12 +1,21 @@
 const express = require('express');
 const { COOKIE_ADDONS, COOKIE_BASES } = require('../data/cookies-data');
 const { getAddonsFromReq } = require('../utils/get-addons-from-req');
-const { renderError, showErrorPage } = require('../utils/render-error');
+const { renderError } = require('../utils/render-error');
 
-const configuratorRouter = express.Router();
+class ConfiguratorRouter {
+  constructor() {
+    this.router = express.Router();
+    this.setUpRoutes();
+  }
 
-configuratorRouter
-  .get('/select/base/:base', (req, res) => {
+  setUpRoutes() {
+    this.router.get('/select/base/:base', this.selectBase);
+    this.router.get('/select/addon/:addon', this.selectAddon);
+    this.router.get('/select/addon/:addon', this.removeAddon);
+  }
+
+  selectBase(req, res) {
     const { base } = req.params;
 
     if (!COOKIE_BASES[base]) {
@@ -16,8 +25,9 @@ configuratorRouter
     res
       .cookie('cookieBase', base)
       .render('configurator/base-selected', { base });
-  })
-  .get('/select/addon/:addon', (req, res) => {
+  }
+
+  selectAddon(req, res) {
     const { addon } = req.params;
 
     if (!COOKIE_ADDONS[addon]) {
@@ -37,8 +47,9 @@ configuratorRouter
     res
       .cookie('cookieAddons', JSON.stringify(addons))
       .render('configurator/added', { addon });
-  })
-  .get('/remove/addon/:addon', (req, res) => {
+  }
+
+  removeAddon(req, res) {
     const { addon } = req.params;
 
     const oldAddons = getAddonsFromReq(req);
@@ -52,8 +63,9 @@ configuratorRouter
     res
       .cookie('cookieAddons', JSON.stringify(newAddons))
       .render('configurator/removed', { addon });
-  });
+  }
+}
 
 module.exports = {
-  configuratorRouter,
+  ConfiguratorRouter,
 };
