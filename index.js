@@ -1,21 +1,45 @@
+/* eslint-disable no-underscore-dangle */
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const hbs = require('express-handlebars');
-const { homeRouter } = require('./routes/home');
+const { HomeRouter } = require('./routes/home');
 const { orderRouter } = require('./routes/order');
 const { configuratorRouter } = require('./routes/configurator');
 const { handlebarsHelpers } = require('./utils/handlebars-helpers');
 
-const app = express();
-app.use(express.json());
-app.use(express.static('public'));
-app.use(cookieParser());
+class CookieMakerApp {
+  constructor() {
+    this._configureApp();
+    this._setRoutes();
+    this._run();
+  }
 
-app.engine('.hbs', hbs({ extname: '.hbs', helpers: handlebarsHelpers }));
-app.set('view engine', '.hbs');
+  _configureApp() {
+    this.app = express();
+    this.app.use(express.json());
+    this.app.use(express.static('public'));
+    this.app.use(cookieParser());
 
-app.use('/', homeRouter);
-app.use('/configurator', configuratorRouter);
-app.use('/order', orderRouter);
+    this.app.engine(
+      '.hbs',
+      hbs({ extname: '.hbs', helpers: handlebarsHelpers }),
+    );
+    this.app.set('view engine', '.hbs');
+  }
 
-app.listen(3000);
+  _setRoutes() {
+    this.app.use('/', new HomeRouter().router);
+    this.app.use('/configurator', configuratorRouter);
+    this.app.use('/order', orderRouter);
+  }
+
+  _run() {
+    this.app.listen(3000, 'localhost', () => {
+      // eslint-disable-next-line no-console
+      console.log('Listening on http://localhost:3000');
+    });
+  }
+}
+
+// eslint-disable-next-line no-new
+new CookieMakerApp();

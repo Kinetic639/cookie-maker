@@ -9,7 +9,7 @@ orderRouter
 
     res.render('order/summary', {
       cookie: {
-        base,
+        base: base || 'light',
         addons,
       },
       allBases,
