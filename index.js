@@ -3,12 +3,14 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const hbs = require('express-handlebars');
 const { HomeRouter } = require('./routes/home');
-const { orderRouter } = require('./routes/order');
+const { OrderRouter } = require('./routes/order');
 const { ConfiguratorRouter } = require('./routes/configurator');
 const { handlebarsHelpers } = require('./utils/handlebars-helpers');
+const { COOKIE_BASES, COOKIE_ADDONS } = require('./data/cookies-data');
 
 class CookieMakerApp {
   constructor() {
+    this._loadData();
     this._configureApp();
     this._setRoutes();
     this._run();
@@ -28,9 +30,9 @@ class CookieMakerApp {
   }
 
   _setRoutes() {
-    this.app.use('/', new HomeRouter().router);
-    this.app.use('/configurator', new ConfiguratorRouter().router);
-    this.app.use('/order', orderRouter);
+    this.app.use('/', new HomeRouter(this).router);
+    this.app.use('/configurator', new ConfiguratorRouter(this).router);
+    this.app.use('/order', new OrderRouter(this).router);
   }
 
   _run() {
@@ -39,7 +41,47 @@ class CookieMakerApp {
       console.log('Listening on http://localhost:3000');
     });
   }
+
+  renderError(res, text) {
+    res.render('error', {
+      text,
+    });
+  }
+
+  getAddonsFromReq(req) {
+    const { cookieAddons } = req.cookies;
+    return cookieAddons ? JSON.parse(cookieAddons) : [];
+  }
+
+  getCookieSettings(req) {
+    const { cookieBase: base } = req.cookies;
+
+    const addons = this.getAddonsFromReq(req);
+
+    const allBases = Object.entries(this.data.COOKIE_BASES);
+    const allAddons = Object.entries(this.data.COOKIE_ADDONS);
+
+    const sum =
+      handlebarsHelpers.findPrice(allBases, base || 'light') +
+      addons.reduce(
+        (prev, curr) => prev + handlebarsHelpers.findPrice(allAddons, curr),
+        0,
+      );
+    return {
+      addons,
+      sum,
+      base,
+      allBases,
+      allAddons,
+    };
+  }
+
+  _loadData() {
+    this.data = {
+      COOKIE_ADDONS,
+      COOKIE_BASES,
+    };
+  }
 }
 
-// eslint-disable-next-line no-new
 new CookieMakerApp();

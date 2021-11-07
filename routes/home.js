@@ -1,12 +1,8 @@
-/* eslint-disable class-methods-use-this */
-/* eslint-disable object-curly-newline */
-/* eslint-disable implicit-arrow-linebreak */
-/* eslint-disable operator-linebreak */
 const express = require('express');
-const { getCookieSettings } = require('../utils/get-cookie-setting');
 
 class HomeRouter {
-  constructor() {
+  constructor(cmapp) {
+    this.cmapp = cmapp;
     this.router = express.Router();
     this.setUpRoutes();
   }
@@ -15,8 +11,9 @@ class HomeRouter {
     this.router.get('/', this.home);
   }
 
-  home(req, res) {
-    const { addons, sum, base, allBases, allAddons } = getCookieSettings(req);
+  home = (req, res) => {
+    const { addons, sum, base, allBases, allAddons } =
+      this.cmapp.getCookieSettings(req);
 
     res.render('home/index', {
       cookie: {
@@ -27,7 +24,7 @@ class HomeRouter {
       allAddons,
       sum,
     });
-  }
+  };
 }
 
 module.exports = {
