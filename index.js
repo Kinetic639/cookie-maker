@@ -39,7 +39,7 @@ class CookieMakerApp {
     const PORT = process.env.PORT || 3000;
     this.app.listen(PORT, 'localhost', () => {
       // eslint-disable-next-line no-console
-      console.log('Listening on http://localhost:3000');
+      console.log(`Listening on http://localhost:${PORT}`);
     });
   }
 
