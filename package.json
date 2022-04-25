@@ -17,7 +17,9 @@
     "url": "https://github.com/Kinetic639/cookie-maker/issues"
   },
   "homepage": "https://github.com/Kinetic639/cookie-maker#readme",
-  "devDependencies": {},
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  },
   "dependencies": {
     "cookie-parser": "^1.4.5",
     "express": "^4.17.1",
